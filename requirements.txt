@@ -1,0 +1,5 @@
+cryptography==46.0.2
+Flask==2.2.5
+flask_session==0.8.0
+mysql-connector-python>=8.1.0
+Werkzeug==2.2.3

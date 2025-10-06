@@ -1,0 +1,80 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Upload task</title>
+</head>
+
+<body>
+    <button onclick="window.location.href='/logout'">Logout</button>
+    <h1>Upload Your Task</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileUpload" name="fileUpload" multiple>
+        <label for="fileUpload">
+            Choose File
+        </label>
+        <input type="submit" value="Upload" >
+    </form>
+    <p id="fileName"></p>
+    <div id="serverError" style="display:none"></div>
+    <script>
+        const serverError = document.getElementById('serverError');
+
+        document.getElementById('fileUpload').addEventListener('change', function () {
+            serverError.style.display = 'none';
+            serverError.textContent = '';
+            document.getElementById('fileName').textContent = 'Selected files: '
+            for (let i=0; i < this.files.length; i++){
+                console.log(this.files[i].name)
+                document.getElementById('fileName').textContent = document.getElementById('fileName').textContent + this.files[i].name + ", ";
+            }
+        });
+
+        const form = document.getElementById("uploadForm");
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            upload_script();
+        });
+
+        function upload_script(){
+            
+            serverError.style.display = 'none';
+            serverError.textContent = '';
+
+            const formData = new FormData(); 
+
+            const files = document.querySelector('input[type="file"]').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('task', files[i]);
+            }
+            
+            fetch('http://localhost:5001/upload_task', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(async response => 
+                {const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.Error);
+                }
+                return data;
+                }
+            )
+            .then(data => {
+                alert('Success: ' + data.message);
+            })
+            .catch(error => {
+
+                console.log(error);
+                serverError.style.display = 'block';
+                serverError.textContent = error;
+            });
+        }
+        
+    </script>
+</body>
+
+</html>

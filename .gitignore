@@ -1,0 +1,7 @@
+private_key.pem
+signature.sig
+.env
+./sessions
+./tasks
+./test
+./scripts
