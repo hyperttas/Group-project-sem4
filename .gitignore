@@ -5,3 +5,4 @@ signature.sig
 ./tasks
 ./test
 ./scripts
+./_pycache
