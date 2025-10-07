@@ -18,7 +18,7 @@ with open("public_key.pem", "wb") as f:
     ))
 
 '''
-
+'''
 with open("private_key.pem", "rb") as f:
     pem_data = f.read()
 private_key = serialization.load_pem_private_key(pem_data, password=None)
@@ -61,4 +61,3 @@ try:
     print("Signature is valid.")
 except:
     print("Signature is invalid.")
-'''
