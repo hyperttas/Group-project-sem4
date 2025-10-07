@@ -132,6 +132,9 @@ def upload_script_post():
         if session["role"] in ["admin", "uploader"]:
             files = request.files.getlist("script")
 
+            if len(files) != 2:
+                return jsonify({"Error": 'Upload exactly script and signature'}), 400
+
             for i in files:
                 if not allowed_file_scripts(i.filename):
                     return jsonify({"Error": 'Invalid file size (below 5MB) or type (only .py or .sig allowed)!'}), 400
@@ -175,7 +178,12 @@ def upload_task_post():
         if session["role"] in ["admin", "uploader"]:
             file = request.files.get("task")
             content = file.read().decode('utf-8')
-            data = json.loads(content)
+
+            try:
+                data = json.loads(content)
+            except json.JSONDecodeError as e:
+                print("Invalid JSON syntax:", e)
+                return jsonify({"Error": 'Invalid file size type (only .json allowed)!'}), 400
             
             if not allowed_file_tasks(file.filename):
                 return jsonify({"Error": 'Invalid file size (below 5MB) or type (only .json allowed)!'}), 400
