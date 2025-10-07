@@ -18,15 +18,19 @@ with open("public_key.pem", "wb") as f:
     ))
 
 '''
-'''
+
 with open("private_key.pem", "rb") as f:
     pem_data = f.read()
 private_key = serialization.load_pem_private_key(pem_data, password=None)
 
 file_path="./test/sudoku_solver.py"
 
-with open(file_path, "rb") as f:
-    message = f.read()
+with open(file_path, "r", encoding="utf-8") as f:
+    message_text = f.read()
+
+message_text = message_text.replace("\r\n", "\n")
+
+message = message_text.encode("utf-8")
 
 signature = private_key.sign(
     message,
@@ -35,6 +39,7 @@ signature = private_key.sign(
 
 with open("signature.sig", "wb") as f:
     f.write(signature)
+
 '''
 file_path="./test/sudoku_solver.py"
 with open(file_path, "rb") as f:
@@ -56,3 +61,4 @@ try:
     print("Signature is valid.")
 except:
     print("Signature is invalid.")
+'''
