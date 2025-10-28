@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_FILE_DIR"] = "./sessions"
+app.config["SESSION_FILE_DIR"] = "/var/www/FlaskApp/FlaskApp/sessions"
 
 Session(app)
 
@@ -30,8 +30,8 @@ ALLOWED_EXTENSIONS_SCRIPTS = {"py", "sig"}
 ALLOWED_EXTENSIONS_TASKS = {"json"}
 
 MAX_FILE_SIZE = 5 * 1024 * 1024
-SCRIPTS_FOLDER = 'scripts'
-TASKS_FOLDER = 'tasks'
+SCRIPTS_FOLDER = '/var/www/FlaskApp/FlaskApp/scripts'
+TASKS_FOLDER = '/var/www/FlaskApp/FlaskApp/tasks'
 
 app.config["SCRIPTS_FOLDER"] = SCRIPTS_FOLDER
 os.makedirs(SCRIPTS_FOLDER, exist_ok=True)
