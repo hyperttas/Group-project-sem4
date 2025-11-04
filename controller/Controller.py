@@ -1,0 +1,36 @@
+import asyncio
+from funcs import *
+from async_funcs import *
+
+async def startup(): #make it so startup() checks if they actually return True or return False
+    print("\n" + 50*"-" + "\n")
+    minio_check()
+    print("\n")
+    await init_jobs_pool()
+    await ensure_db_exists()
+    print("\n")
+    await ensure_jobs_table()
+    await ensure_nodes_table()
+    return print("Startup checks successful!")
+
+async def read_jobs():
+    while True:
+        jobs = await get_jobs()
+
+        if len(jobs) > 0:
+            print("\nNew jobs found:\n" + 50*"-")
+            for job in jobs:
+                print(job)
+            print(50*"-")
+        else:
+            print("\nNo new jobs found.\n")
+        await asyncio.sleep(10)
+
+async def main():
+    await startup()
+    await asyncio.gather(
+        read_jobs(),
+    )
+
+if __name__ == "__main__":
+    asyncio.run(main())
