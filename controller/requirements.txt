@@ -1,0 +1,6 @@
+minio~=7.2.18
+dotenv~=0.9.9
+python-dotenv~=1.1.1
+cryptography~=46.0.3
+asyncpg~=0.30.0
+PyYAML~=6.0.3
