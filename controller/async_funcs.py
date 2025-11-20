@@ -1,18 +1,27 @@
 import asyncpg
 import common
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+user = os.environ.get("db_user")
+db_pass = os.environ.get("db_pass")
+db = os.environ.get("db_name")
+host = os.environ.get("db_host")
 
 async def init_jobs_pool():
     common.pool = await asyncpg.create_pool(
-        user="postgres",
-        password="Unholy31",
-        database="postgres",
-        host="localhost"
+        user=user,
+        password=db_pass,
+        database=db,
+        host=host
     )
 
 async def ensure_db_exists():
     async with common.pool.acquire() as conn:
         exists = await conn.fetchval(
-            "SELECT 1 FROM pg_database WHERE datname='postgres'"
+            "SELECT 1 FROM pg_database WHERE datname = $1 LIMIT 1;",
+            db
         )
 
         if not exists:

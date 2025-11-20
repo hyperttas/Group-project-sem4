@@ -1,6 +1,7 @@
 import asyncio
 from funcs import *
 from async_funcs import *
+from secure_server import run_secure_server
 
 #Current iteration of the program
 version = 0.2
@@ -10,12 +11,14 @@ async def startup(): #make it so startup() checks if they actually return True o
     print(50*"-" + "\n")
     minio_check()
     print("\n")
+
     await init_jobs_pool()
     await ensure_db_exists()
     print("\n")
     await ensure_jobs_table()
     await ensure_nodes_table()
-    return print("Startup checks successful!")
+
+    return print("All checks successful!")
 
 async def read_jobs():
     while True:
@@ -47,11 +50,14 @@ async def read_nodes():
             print("Database does not contain any nodes, or there was an error connecting to the database.\n")
         await asyncio.sleep(8)
 
+
+
 async def main():
     await startup()
     await asyncio.gather(
         read_jobs(),
         read_nodes(),
+        run_secure_server(),
         
     )
 
