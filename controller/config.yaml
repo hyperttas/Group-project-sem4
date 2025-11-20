@@ -1,0 +1,8 @@
+ssl:
+  ca_cert: "certs/ca/ca.crt"
+  cert: "certs/controller/controller.crt"
+  key: "certs/controller/controller.key"
+
+network:
+  host: "0.0.0.0"
+  port: 9000

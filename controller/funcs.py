@@ -3,20 +3,23 @@ from common import client
 
 def minio_check():
     print("Performing MinIO check...")
-    if not client.bucket_exists("scripts"):
-        print("000: Bucket 'scripts' does not exist")
-        client.make_bucket("scripts")
-        print("001: Bucket 'scripts' was created.")
-    else:
-        print("002: Bucket 'scripts' exists.")
+    try:
+        if not client.bucket_exists("scripts"):
+            print("000: Bucket 'scripts' does not exist")
+            client.make_bucket("scripts")
+            print("001: Bucket 'scripts' was created.")
+        else:
+            print("002: Bucket 'scripts' exists.")
 
-    if not client.bucket_exists("tasks"):
-        print("000: Bucket 'tasks' does not exist")
-        client.make_bucket("tasks")
-        print("001: Bucket 'tasks' was created.")
-    else:
-        print("002: Bucket 'tasks' exists.")
-    return print("MinIO check complete.")
+        if not client.bucket_exists("tasks"):
+            print("000: Bucket 'tasks' does not exist")
+            client.make_bucket("tasks")
+            print("001: Bucket 'tasks' was created.")
+        else:
+            print("002: Bucket 'tasks' exists.")
+        return print("MinIO check complete.")
+    except Exception as e:
+        print("MinIO check failed:\n" + str(e))
 
 def get_task():
     task = "test_task"

@@ -1,4 +1,3 @@
-import asyncio
 import asyncpg
 import common
 
@@ -9,10 +8,6 @@ async def init_jobs_pool():
         database="postgres",
         host="localhost"
     )
-
-async def get_jobs():
-    async with common.pool.acquire() as conn:
-        return await conn.fetch("SELECT * FROM jobs WHERE status = 0")
 
 async def ensure_db_exists():
     async with common.pool.acquire() as conn:
@@ -47,3 +42,11 @@ async def ensure_nodes_table():
                 status INTEGER NOT NULL DEFAULT 0
             );
         """)
+
+async def get_jobs():
+    async with common.pool.acquire() as conn:
+        return await conn.fetch("SELECT * FROM jobs WHERE status = 0")
+
+async def get_nodes():
+    async with common.pool.acquire() as conn:
+        return await conn.fetch("SELECT * FROM nodes")
