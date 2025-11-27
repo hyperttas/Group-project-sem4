@@ -4,7 +4,7 @@ from async_funcs import *
 from secure_server import run_secure_server
 
 #Current iteration of the program
-version = 0.2
+version = 0.3
 
 async def startup(): #make it so startup() checks if they actually return True or return False
     print(f"Node & Job Controller V{version} Program startup...")
