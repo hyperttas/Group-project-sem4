@@ -1,7 +1,11 @@
 import asyncio
 import ssl
+from dotenv import load_dotenv
+import os
 
-HOST_IP = "172.18.0.1"
+load_dotenv()
+
+HOST_IP = os.getenv("controller")
 HOST_PORT = 4433
 
 async def node_loop():

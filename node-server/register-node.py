@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 token = os.getenv("unique-token")
-controller = "172.18.0.1"
+controller = os.getenv("controller")
 
 s = requests.Session()
 res = s.post(f"https://{controller}/register", json={"token": token})
