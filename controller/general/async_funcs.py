@@ -9,8 +9,11 @@ db_pass = os.environ.get("db_pass")
 db = os.environ.get("db_name")
 host = os.environ.get("db_host")
 
+pool = common.pool
+
 async def init_jobs_pool():
-    common.pool = await asyncpg.create_pool(
+    global pool
+    pool = await asyncpg.create_pool(
         user=user,
         password=db_pass,
         database=db,
@@ -18,7 +21,7 @@ async def init_jobs_pool():
     )
 
 async def ensure_db_exists():
-    async with common.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         exists = await conn.fetchval(
             "SELECT 1 FROM pg_database WHERE datname = $1 LIMIT 1;",
             db
@@ -32,7 +35,7 @@ async def ensure_db_exists():
             return True
 
 async def ensure_jobs_table():
-    async with common.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS jobs (
                 id SERIAL PRIMARY KEY,
@@ -43,7 +46,7 @@ async def ensure_jobs_table():
         """)
 
 async def ensure_nodes_table():
-    async with common.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS nodes (
                 id SERIAL PRIMARY KEY,
@@ -53,9 +56,9 @@ async def ensure_nodes_table():
         """)
 
 async def get_jobs():
-    async with common.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         return await conn.fetch("SELECT * FROM jobs WHERE status = 0")
 
 async def get_nodes():
-    async with common.pool.acquire() as conn:
+    async with pool.acquire() as conn:
         return await conn.fetch("SELECT * FROM nodes")

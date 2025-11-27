@@ -1,6 +1,6 @@
 import ssl
 import asyncio
-from handlers import handle_node
+from networking.handlers import handle_node
 import yaml
 
 with open ("config.yaml") as f:

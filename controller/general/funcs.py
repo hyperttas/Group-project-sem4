@@ -1,4 +1,3 @@
-import common
 from common import client
 
 def minio_check():
