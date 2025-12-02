@@ -5,3 +5,4 @@ python-dotenv~=1.1.1
 asyncpg~=0.30.0
 PyYAML~=6.0.3
 cryptography~=46.0.3
+uvicorn~=0.38.0
