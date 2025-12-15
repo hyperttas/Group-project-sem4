@@ -26,7 +26,6 @@ async def ensure_db_exists():
             "SELECT 1 FROM pg_database WHERE datname = $1 LIMIT 1;",
             db
         )
-
         if not exists:
             print("Database postgres does not exist, please fix the issue before proceeding.")
             return False
@@ -34,31 +33,48 @@ async def ensure_db_exists():
             print("Database postgres exists.")
             return True
 
-async def ensure_jobs_table():
+async def ensure_tables():
     async with pool.acquire() as conn:
-        await conn.execute("""
-            CREATE TABLE IF NOT EXISTS jobs (
-                id SERIAL PRIMARY KEY,
-                task TEXT NOT NULL,
-                script TEXT NOT NULL,
-                status INTEGER NOT NULL DEFAULT 0
-            );
-        """)
+        jobs_columns = await conn.fetch("""
+                                   SELECT column_name, data_type
+                                   FROM information_schema.columns
+                                   WHERE table_name = 'jobs'
+                                     AND table_schema = 'public'
+                                   ORDER BY ordinal_position;
+                                   """)
+        nodes_columns = await conn.fetch("""
+                                   SELECT column_name, data_type
+                                   FROM information_schema.columns
+                                   WHERE table_name = 'nodes'
+                                     AND table_schema = 'public'
+                                   ORDER BY ordinal_position;
+                                   """)
 
-async def ensure_nodes_table():
-    async with pool.acquire() as conn:
-        await conn.execute("""
-            CREATE TABLE IF NOT EXISTS nodes (
-                id SERIAL PRIMARY KEY,
-                address TEXT NOT NULL,
-                status INTEGER NOT NULL DEFAULT 0
-            );
-        """)
+        if jobs_columns and nodes_columns:
+            print("jobs columns:", [dict(row) for row in jobs_columns],"\n","nodes columns:", [dict(row) for row in nodes_columns])
+        else:
+            print(f"ERROR: One or both tables could not be found.")
 
 async def get_jobs():
     async with pool.acquire() as conn:
-        return await conn.fetch("SELECT * FROM jobs WHERE status = 0")
+        return await conn.fetch("SELECT * FROM jobs")
 
 async def get_nodes():
     async with pool.acquire() as conn:
         return await conn.fetch("SELECT * FROM nodes")
+
+async def job_active(job_id):
+    async with pool.acquire() as conn:
+        await conn.fetchrow("UPDATE jobs SET status = 1 WHERE job_id = $1", job_id)
+
+async def save_result(job_id, result):
+    async with pool.acquire() as conn:
+        await conn.execute("UPDATE jobs SET result = $1 WHERE job_id = $2", result, job_id)
+
+async def node_online(node_ip):
+    async with pool.acquire() as conn:
+        await conn.execute("UPDATE nodes SET status = $2 WHERE node_name = $1", node_ip, "online")
+
+async def register_node(node_ip):
+    async with pool.acquire() as conn:
+        await conn.execute("INSERT INTO nodes (node_name, ip_addresses) VALUES ($1, $2)", node_ip, [node_ip])

@@ -9,8 +9,8 @@ async def connect_to_controller():
     context.load_verify_locations("certs/ca/ca.crt")
 
     reader, writer = await asyncio.open_connection(
-        "your-controller-ip",
-        9000,
+        "192.168.189.8",
+        4433,
         ssl=context
     )
 

@@ -1,6 +1,11 @@
 cryptography==46.0.2
-Flask==2.2.5
-flask_session==0.8.0
-mysql-connector-python>=8.1.0
-Werkzeug==2.2.3
 dotenv==0.9.9
+
+python-dotenv~=1.2.1
+pip~=25.0.1
+protobuf~=4.21.12
+Jinja2~=3.1.6
+cffi~=2.0.0
+click~=8.3.1
+pycparser~=2.23
+itsdangerous~=2.2.0

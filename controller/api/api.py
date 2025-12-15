@@ -11,7 +11,9 @@ async def run_api_server():
         app,
         host="0.0.0.0",
         port=8000,
-        loop="asyncio"
+        loop="asyncio",
+        ssl_certfile="certs/controller/controller.crt",
+        ssl_keyfile="certs/controller/controller.key",
     )
     server = uvicorn.Server(config)
     await server.serve()
@@ -26,6 +28,6 @@ async def register(data: dict):
     return {
         "certificate": cert,
         "private_key": key,
-        "ca_cert": open("ca.crt").read()
+        "ca_crt": open("./certs/ca/ca.crt").read()
     }
 

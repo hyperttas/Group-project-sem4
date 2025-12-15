@@ -1,4 +1,5 @@
 from common import client
+import base64
 
 def minio_check():
     print("Performing MinIO check...")
@@ -20,38 +21,46 @@ def minio_check():
     except Exception as e:
         print("MinIO check failed:\n" + str(e))
 
-def get_task():
-    task = "test_task"
+def get_task(task):
     if client.stat_object(
         bucket_name="tasks",
         object_name=task
     ):
-        print(f"101: Getting task '{task}'...")
-        if client.fget_object(
+        #print(f"101: Getting task '{task}'...")
+        response = client.get_object(
             bucket_name="tasks",
-            object_name=task,
-            file_path=f"tasks/{task}.json"
-        ):
-            return print(f"104: Task '{task}' successfully retrieved.")
+            object_name=task
+        )
+        task_bytes = response.read()
+        response.close()
+        response.release_conn()
+        if task_bytes:
+            #print(f"104: Task '{task}' successfully retrieved.")
+            return base64.b64encode(task_bytes).decode("ascii")
         else:
             print(f"103: Task {task} exists but could not be retrieved.")
     else:
-        return print(f"100: Task '{task}' does not exist.")
+        print(f"100: Task '{task}' does not exist.")
+    return None
 
-def get_script():
-    script = "test_script"
+def get_script(script):
     if client.stat_object(
         bucket_name="scripts",
         object_name=script
     ):
-        print(f"101: Getting script '{script}'...")
-        if client.fget_object(
+        #print(f"101: Getting script '{script}'...")
+        response = client.get_object(
             bucket_name="scripts",
-            object_name=script,
-            file_path=f"scripts/{script}.json"
-        ):
-            return print(f"104: Script '{script}' successfully retrieved.")
+            object_name=script
+        )
+        script_bytes = response.read()
+        response.close()
+        response.release_conn()
+        if script_bytes:
+            #print(f"104: Script '{script}' successfully retrieved.")
+            return base64.b64encode(script_bytes).decode("ascii")
         else:
             print(f"103: Script '{script}' exists but could not be retrieved.")
     else:
-        return print(f"100: Script '{script}' does not exist.")
+        print(f"100: Script '{script}' does not exist.")
+    return None

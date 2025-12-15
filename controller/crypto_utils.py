@@ -13,10 +13,10 @@ def generate_cert_and_key(common_name: str):
     )
 
     # 2. Load CA key and cert
-    with open("ca.key", "rb") as f:
+    with open("./certs/ca/ca.key", "rb") as f:
         ca_key = serialization.load_pem_private_key(f.read(), password=None)
 
-    with open("ca.crt", "rb") as f:
+    with open("./certs/ca/ca.crt", "rb") as f:
         ca_cert = x509.load_pem_x509_certificate(f.read())
 
     # 3. Build certificate request
@@ -44,5 +44,7 @@ def generate_cert_and_key(common_name: str):
         format=serialization.PrivateFormat.TraditionalOpenSSL,
         encryption_algorithm=serialization.NoEncryption(),
     ).decode()
+
+    print(pem_cert, pem_key)
 
     return pem_cert, pem_key
